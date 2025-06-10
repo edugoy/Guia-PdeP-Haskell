@@ -27,5 +27,3 @@ promociono (nota1, nota2) = (nota1 + nota2) >= 15 && nota1 > 7 || nota2 > 7
 
 --d) esto no es una funcion sino algo que debe de ingresarse en la consola
 --se debe de ingresar la siguiente composicion "(not. esNotBochazo . fst) (x,y)" donde X e Y serian las notas del alumno
-
-
