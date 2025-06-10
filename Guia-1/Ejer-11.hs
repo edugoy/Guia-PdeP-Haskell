@@ -25,6 +25,5 @@ esPesoUtil peso = peso >= 400 && peso <= 1000
 
 --c)
 sirvePino :: Int -> Bool
-sirvePino altura = (esPesoUtil (pesoPino altura))
-
---sirvePino altura = (())
+--sirvePino altura = (esPesoUtil (pesoPino altura)) "Funcion orginal, antes de usar composicion"
+sirvePino = (esPesoUtil . pesoPino) --Funcion despues de usar la composicion

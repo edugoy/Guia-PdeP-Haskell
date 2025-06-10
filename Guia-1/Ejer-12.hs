@@ -4,3 +4,11 @@
 --para llegar al 2do (1) sumo 1, para llegar al 3ro (4) sumo 3, para llegar al siguiente (9) sumo 5, después sumo 7, 9, 11 etc.. 
 --También algo de recursividad van a tener que usar. 
 
+esCuadradoPerfecto :: Int -> Bool
+esCuadradoPerfecto n = esCuadradoDesde n 1 0
+
+esCuadradoDesde :: Int -> Int -> Int -> Bool
+esCuadradoDesde objetivo impar suma 
+    | suma == objetivo = True
+    | suma > objetivo = False
+    | otherwise     = esCuadradoDesde objetivo (impar + 2) (suma + impar)
