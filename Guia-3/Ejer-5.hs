@@ -20,7 +20,7 @@
 esNotaBochazo :: Int -> Bool
 esNotaBochazo = (<6)
 promociono :: (Int, Int) -> Bool
-promociono (nota1, nota2) = (nota1 + nota2) >= 15 && nota1 > 7 || nota2 > 7
+promociono (nota1, nota2) = (nota1 + nota2) >= 15 && nota1 >= 7 && nota2 >= 7
 
 --a)
 notasFinales :: ((Int, Int), (Int, Int)) -> (Int, Int)

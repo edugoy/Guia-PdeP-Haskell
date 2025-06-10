@@ -4,6 +4,6 @@
 --False 
 --Nota: Definir la función utilizando aplicación parcial y composición.
 esMayorDeEdad :: (String, Int) -> Bool
-esMayorDeEdad persona = (>= 18) (snd persona)
+esMayorDeEdad = (>= 21) . snd
 
 -- esMayorDeEdad persona = (>=) (snd persona) 18
