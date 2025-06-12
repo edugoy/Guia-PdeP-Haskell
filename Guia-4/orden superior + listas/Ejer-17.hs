@@ -16,3 +16,5 @@ alturasEnUnAnio :: Int -> [Int] -> [Int]
 alturasEnUnAnio edad lista = map (+ crecimientoAnual edad) lista
 
 --d)
+alturaEnEdades :: Int -> Int -> [Int] -> [Int]
+alturaEnEdades altura edad lista = map ((altura +) . (crecimientoEntreEdades edad)) lista
