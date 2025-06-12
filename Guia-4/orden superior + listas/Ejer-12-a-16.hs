@@ -62,5 +62,5 @@ noEsDivisor n x = mod n x /= 0
 --Definir la función: huboMesMejorDe/3, que dadas las listas de ingresos y egresos y un número, devuelve True si 
 --el resultado de algún mes es mayor que el número.
 
-huboMesMejorDe :: [Int] -> [Int] -> Int
-huboMesMejorDe ingreso egreso num = 
+huboMesMejorDe :: [Int] -> [Int] -> Int -> Bool
+huboMesMejorDe ingreso egreso num = any (>num) (zipWith (-) ingreso egreso)
