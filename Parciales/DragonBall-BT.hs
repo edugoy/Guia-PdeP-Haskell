@@ -2,7 +2,6 @@ data Guerrero = Guerrero {
     ki :: Float,
     fatiga :: Float,
     cansancio :: Float,
-    estado :: String,
     tipo :: String
 } deriving(Show,Eq)
 
@@ -35,10 +34,16 @@ realizarDescanso g min = g { cansancio = cansancio g - fromIntegral(sum [1 .. mi
 
 realizarEjercicio :: (Guerrero -> Guerrero) -> Guerrero -> Guerrero
 realizarEjercicio ejercicio g 
-    | estadoDelGuerrero g == "exhausto" = g {ki = ki g * 0.98}
-    | estadoDelGuerrero g == "cansado" = g {ki = ki g + (ki (ejercicio g) - ki g) * 2, 
+    | estaExhausto g = g {ki = ki g * 0.98}
+    | estaCansado g = g {ki = ki g + (ki (ejercicio g) - ki g) * 2, 
         cansancio = cansancio g + (cansancio (ejercicio g) - cansancio g) * 4}
     | otherwise = ejercicio g
+
+estaExhausto :: Guerrero -> Bool
+estaExhausto g = fatiga g > ki g * 0.72
+
+estaCansado :: Guerrero -> Bool
+estaCansado g = fatiga g > ki g * 0.44
 
 cantidadOptimaDescanso :: Guerrero -> Int 
 cantidadOptimaDescanso g = buscarMinuto g 1
