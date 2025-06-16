@@ -23,12 +23,6 @@ snatch g
 seHizoBien :: Guerrero -> Bool
 seHizoBien g = ki g == 22000
 
-estadoDelGuerrero :: Guerrero -> String
-estadoDelGuerrero g 
-    | fatiga g > ki g * 0.72 = "exhausto"
-    | fatiga g > ki g * 0.44 = "cansado"
-    | otherwise = "fresco"
-
 realizarDescanso :: Guerrero -> Int -> Guerrero
 realizarDescanso g min = g { cansancio = cansancio g - fromIntegral(sum [1 .. min])}
 
