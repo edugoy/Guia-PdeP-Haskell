@@ -5,59 +5,67 @@ data Guerrero = Guerrero {
     tipo :: String
 } deriving(Show,Eq)
 
-flexionesDeBrazo :: Guerrero -> Guerrero
-flexionesDeBrazo g = g {fatiga = fatiga g + 50}
+modificarKi :: (Float -> Float) -> Guerrero -> Guerrero
+modificarKi funcion guerrero = guerrero {ki = funcion (ki guerrero)}
 
-saltosAlCajon :: Guerrero -> Float -> Guerrero
-saltosAlCajon g altura = g {
-    ki = ki g + altura / 10,
-    cansancio = cansancio g + altura / 5
-    }
+modificarFatiga :: (Float -> Float) -> Guerrero -> Guerrero
+modificarFatiga funcion guerrero = guerrero {fatiga = funcion (fatiga guerrero)}
+
+modificarCansancio :: (Float -> Float) -> Guerrero -> Guerrero
+modificarCansancio funcion guerrero = guerrero {cansancio = funcion (cansancio guerrero)}
+
+flexionesDeBrazo :: Guerrero -> Guerrero
+flexionesDeBrazo = modificarFatiga (+ 50)
+
+saltosAlCajon ::Float -> Guerrero ->  Guerrero
+saltosAlCajon altura guerrero = modificarCansancio (+ altura / 5) (modificarKi (+ altura / 10) guerrero)
 
 snatch :: Guerrero -> Guerrero
-snatch g 
-    | seHizoBien g = g {ki = ki g * 1.05,
-        fatiga = fatiga g * 1.1}
-    | otherwise = g {fatiga = fatiga g +100}
+snatch guerrero 
+    | seHizoBien guerrero = modificarKi (* 1.05) (modificarFatiga (* 1.1) guerrero)
+    | otherwise = modificarFatiga (+ 100) guerrero
 
 seHizoBien :: Guerrero -> Bool
-seHizoBien g = ki g == 22000
+seHizoBien guerrero = ki guerrero == 22000
 
-realizarDescanso :: Guerrero -> Int -> Guerrero
-realizarDescanso g min = g { cansancio = cansancio g - fromIntegral(sum [1 .. min])}
+realizarDescanso :: Guerrero -> Float -> Guerrero
+realizarDescanso guerrero minuto = modificarCansancio (restarCansancioPorMinuto minuto) guerrero
+
+restarCansancioPorMinuto :: Float -> Float -> Float
+restarCansancioPorMinuto minutos cansancio = cansancio - sum [1 .. minutos]
 
 realizarEjercicio :: (Guerrero -> Guerrero) -> Guerrero -> Guerrero
-realizarEjercicio ejercicio g 
-    | estaExhausto g = g {ki = ki g * 0.98}
-    | estaCansado g = g {ki = ki g + (ki (ejercicio g) - ki g) * 2, 
-        cansancio = cansancio g + (cansancio (ejercicio g) - cansancio g) * 4}
-    | otherwise = ejercicio g
+realizarEjercicio ejercicio guerrero 
+    | estaExhausto guerrero = modificarKi (* 0.98) guerrero
+    | estaCansado guerrero = guerrero {ki = ki guerrero + (ki (ejercicio guerrero) - ki guerrero) * 2, 
+        cansancio = cansancio guerrero + (cansancio (ejercicio guerrero) - cansancio guerrero) * 4}
+    | otherwise = ejercicio guerrero
 
 estaExhausto :: Guerrero -> Bool
-estaExhausto g = fatiga g > ki g * 0.72
+estaExhausto guerrero = fatiga guerrero > ki guerrero * 0.72
 
 estaCansado :: Guerrero -> Bool
-estaCansado g = fatiga g > ki g * 0.44
+estaCansado guerrero = fatiga guerrero > ki guerrero * 0.44
 
 cantidadOptimaDescanso :: Guerrero -> Int 
-cantidadOptimaDescanso g = buscarMinuto g 1
+cantidadOptimaDescanso guerrero = buscarMinuto guerrero 1
 
 buscarMinuto :: Guerrero -> Int -> Int
-buscarMinuto g n
-    | cansancio g == 0 = 0
-    | fromIntegral(sum [1 .. n]) >= cansancio g = n
-    | otherwise = buscarMinuto g (n + 1)
+buscarMinuto guerrero n
+    | cansancio guerrero == 0 = 0
+    | fromIntegral(sum [1 .. n]) >= cansancio guerrero = n
+    | otherwise = buscarMinuto guerrero (n + 1)
 
 realizarRutina :: Guerrero -> [Guerrero -> Guerrero] -> Guerrero
-realizarRutina g ejercicios
-    | tipo g == "sacado" = aplicarEjercicios ejercicios g
-    | tipo g == "perezoso" = aplicarEjerciciosConDescanso ejercicios g
-    | otherwise = g
+realizarRutina guerrero ejercicios
+    | tipo guerrero == "sacado" = aplicarEjercicios ejercicios guerrero
+    | tipo guerrero == "perezoso" = aplicarEjerciciosConDescanso ejercicios guerrero
+    | otherwise = guerrero
 
 aplicarEjercicios :: [Guerrero -> Guerrero] -> Guerrero -> Guerrero
-aplicarEjercicios [] g = g
-aplicarEjercicios (e:es) g = aplicarEjercicios es (realizarEjercicio e g)
+aplicarEjercicios [] guerrero = guerrero
+aplicarEjercicios (e:es) guerrero = aplicarEjercicios es (realizarEjercicio e guerrero)
 
 aplicarEjerciciosConDescanso :: [Guerrero -> Guerrero] -> Guerrero -> Guerrero
-aplicarEjerciciosConDescanso [] g = g
-aplicarEjerciciosConDescanso (e:es) g = aplicarEjerciciosConDescanso es (realizarDescanso (realizarEjercicio e g) 5)
+aplicarEjerciciosConDescanso [] guerrero = guerrero
+aplicarEjerciciosConDescanso (e:es) guerrero = aplicarEjerciciosConDescanso es (realizarDescanso (realizarEjercicio e guerrero) 5)
