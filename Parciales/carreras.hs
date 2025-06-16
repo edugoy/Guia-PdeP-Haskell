@@ -31,3 +31,27 @@ puesto auto carrera = 1 + length (filter (meGanan auto)(carreraSinMi auto carrer
 
 corraUnTiempo :: Auto -> Int ->Auto
 corraUnTiempo auto tiempo = auto {distancia = distancia auto + tiempo * velocidad auto} 
+
+alterarVelocidad :: (Int -> Int) -> Auto -> Auto
+alterarVelocidad modificador auto = auto {velocidad = modificador (velocidad auto)}
+
+bajarLaVelocidad :: Int -> Auto -> Auto
+bajarLaVelocidad cantidad = alterarVelocidad (max 0 . subtract cantidad)
+
+--funcion dada en el parcial para resolver el pto 3
+afectarALosQueCumplen :: (a -> Bool) -> (a -> a) -> [a] -> [a]
+afectarALosQueCumplen criterio efecto lista
+  = (map efecto . filter criterio) lista ++ filter (not.criterio) lista
+
+terremoto :: Auto -> [Auto] -> [Auto]
+terremoto autoGatilla = afectarALosQueCumplen (estaCerca autoGatilla) (bajarLaVelocidad 50)
+
+miguelitos :: Auto -> Int -> [Auto] -> [Auto]
+miguelitos autoGatilla velocidadABajar = 
+    afectarALosQueCumplen (leGanaA autoGatilla) (bajarLaVelocidad velocidadABajar)
+
+jetPack :: Auto -> Int -> Auto
+jetPack autoGatilla = corraUnTiempo (alterarVelocidad (*2) autoGatilla)
+
+--simularCarrera :: [Auto] -> [[Auto] -> [Auto]] -> [(Int, color)]
+--simularCarrera carrera sucesos = 
