@@ -85,3 +85,25 @@ hacerUnaTarea tarea heroe = agregarTarea tarea (tarea heroe)
 agregarTarea :: Tarea -> Heroe -> Heroe
 agregarTarea tarea heroe = heroe {tareas = tarea : tareas heroe}
 
+presumir :: Heroe -> Heroe -> (Heroe,Heroe)
+presumir heroe1 heroe2
+    | leganaA heroe1 heroe2 = (heroe1, heroe2)
+    | leganaA heroe2 heroe1 = (heroe2, heroe1)
+    | otherwise = presumir (hacerTareaDe heroe1 heroe2)(hacerTareaDe heroe2 heroe1)
+
+leganaA :: Heroe -> Heroe -> Bool
+leganaA ganador perdedor = reconocimiento ganador > reconocimiento perdedor ||
+    reconocimiento ganador == reconocimiento perdedor && sumarRareza ganador > sumarRareza perdedor
+
+sumarRareza :: Heroe -> Int
+sumarRareza = sum . map rareza . artefactos
+
+hacerTareaDe :: Heroe -> Heroe -> Heroe
+hacerTareaDe unHeroe otroHeroe = realizarTareas unHeroe (tareas otroHeroe)
+
+realizarTareas :: Heroe -> [Tarea] -> Heroe
+realizarTareas unHeroe tareas = foldr hacerUnaTarea unHeroe tareas
+
+type Labor = [Tarea]
+labor :: Labor -> Heroe -> Heroe
+labor unLabor unHeroe = realizarTareas unHeroe unLabor
